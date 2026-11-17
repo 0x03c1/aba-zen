@@ -40,11 +40,11 @@ Estimativa por aba: `30 MB + heap JS + 1,5 MB por mil elementos + 25 MB por fram
 
 ## Privacidade
 
-Nada sai da máquina: não há nenhuma requisição de rede. A última medição fica em `storage.session` (some ao fechar o navegador). As configurações e o histórico das últimas 30 suspensões (título e URL) ficam em `storage.local`.
+Nada sai da máquina: não há nenhuma requisição de rede. A última medição fica em `storage.session` (some ao fechar o navegador). As configurações e o histórico das últimas 30 suspensões (título e URL) ficam em `storage.local`. Detalhes na [política de privacidade](PRIVACY.md).
 
 ## Contribuir
 
-Issues e PRs são bem-vindos. Testes: `node --test`. Ideias em aberto:
+Issues e PRs são bem-vindos. Testes: `node --test`. Pacotes para as lojas: `python3 ferramentas/empacotar.py` (gera `dist/`). Ideias em aberto:
 
 - Estimativa melhor: somar imagens decodificadas, `<canvas>` e vídeos tocando
 - Medir com menos frequência quando há RAM sobrando
