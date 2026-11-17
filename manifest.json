@@ -13,7 +13,7 @@
   },
   "permissions": ["tabs", "storage", "alarms", "system.memory", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
-  "background": { "service_worker": "background.js", "scripts": ["config.js", "background.js"] },
+  "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],

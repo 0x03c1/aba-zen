@@ -34,7 +34,7 @@ function desenharRam(estado) {
   }
   const limite = estado.limiteLivre ?? PADRAO.limiteLivre;
   const usada = 100 - mem.livre;
-  $("#ram").textContent = `Sistema: ${mem.livre.toFixed(0)}% livre (${mem.livreGB.toFixed(1)} de ${mem.totalGB.toFixed(0)} GB) · medido ${haQuanto(estado.quando)}`;
+  $("#ram").textContent = `Sistema: ${mem.livre.toFixed(0)}% livre (${mem.livreGB.toFixed(1).replace(".", ",")} de ${mem.totalGB.toFixed(0)} GB) · medido ${haQuanto(estado.quando)}`;
   barra.hidden = false;
   barra.setAttribute("aria-valuenow", Math.round(usada));
   const span = barra.querySelector("span");

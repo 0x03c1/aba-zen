@@ -1,7 +1,8 @@
 // Background: acorda a cada minuto, mede as abas, atualiza o ícone e,
 // se a memória do sistema estiver baixa, suspende (discard) as abas paradas mais pesadas.
 // Chromium carrega este arquivo como service worker; o Firefox, como script de fundo
-// (lá o config.js já vem antes, pela lista "scripts" do manifest).
+// (lá o config.js já vem antes, pela lista "scripts" que ferramentas/empacotar.py
+// coloca no manifest do Firefox).
 if (typeof importScripts === "function" && typeof PADRAO === "undefined") importScripts("config.js");
 
 // Cada processo extra (frame de outro site) custa algo como 20–40 MB.

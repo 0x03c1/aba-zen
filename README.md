@@ -19,7 +19,7 @@ Extensão de navegador que mostra **quais abas estão pesando** e **suspende as 
 
 **Chromium (Chrome, Edge, Brave, Opera, Vivaldi, Arc, Dia):** `chrome://extensions` (ou `edge://extensions`) → ligar **Modo do desenvolvedor** → **Carregar sem compactação** → escolher esta pasta.
 
-**Firefox 128+:** `about:debugging#/runtime/this-firefox` → **Carregar extensão temporária** → escolher o `manifest.json`.
+**Firefox 128+:** rode `python3 ferramentas/empacotar.py` e, em `about:debugging#/runtime/this-firefox` → **Carregar extensão temporária**, escolha `dist/memoria-das-abas-<versão>-firefox.zip`. (O `manifest.json` da raiz é o do Chromium; o script gera o do Firefox.)
 
 ## Suporte por navegador
 
