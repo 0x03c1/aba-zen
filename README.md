@@ -3,12 +3,15 @@
 Extensão de navegador que mostra **quais abas estão pesando** e **suspende as mais pesadas** quando a RAM do computador aperta. Funciona no Chrome, Edge, Brave, Opera, Vivaldi, Arc, Dia (Chromium) e, em modo experimental, no Firefox. Windows, macOS e Linux.
 
 <p align="center">
-  <img src="docs/popup-claro.png" width="380" alt="Popup da extensão listando abas com memória estimada">
-  <img src="docs/popup-escuro.png" width="380" alt="O mesmo popup no tema escuro">
+  <img src="docs/popup-claro.png" width="270" alt="Popup com 60 abas: resumo, busca, filtros e lista ordenada por memória">
+  <img src="docs/popup-agrupado.png" width="270" alt="Mesmas abas agrupadas por site, com a memória somada de cada site">
+  <img src="docs/popup-escuro.png" width="270" alt="O popup no tema escuro">
 </p>
 
-- Lista as abas da mais pesada para a mais leve (memória estimada, elementos, frames de terceiros, CPU).
-- O ícone mostra quantas abas estão pesadas.
+- Lista as abas da mais pesada para a mais leve (memória estimada, elementos, frames de terceiros, CPU, tempo parada).
+- Feita para muitas abas: resumo (total em uso e liberado), busca, filtros (pesadas, abertas, suspensas, protegidas), ordenação por memória/CPU/tempo parada, agrupamento por site e paginação.
+- Suspende uma aba, um site inteiro ou tudo o que está filtrado (com confirmação; abas protegidas ficam de fora).
+- O ícone mostra quantas abas estão pesadas. Configurações e histórico ficam na página de opções (⚙).
 - Quando a RAM livre cai abaixo do limite, suspende até 2 abas paradas por minuto. Elas continuam na barra e recarregam ao clicar.
 - **Nunca suspende automaticamente:** a aba ativa, abas tocando som, abas usando câmera/microfone/compartilhando a tela, abas com texto digitado e não enviado, abas fixadas (opcional) e sites protegidos.
 
@@ -46,7 +49,8 @@ Issues e PRs são bem-vindos. Testes: `node --test`. Ideias em aberto:
 - Estimativa melhor: somar imagens decodificadas, `<canvas>` e vídeos tocando
 - Medir com menos frequência quando há RAM sobrando
 - Escolher o que suspender por peso × tempo parada
-- Botão "proteger este site" em cada linha, atalhos de teclado, "suspender todas as outras"
+- Medição real via app auxiliar opcional (*native messaging*): memória real do navegador por processo e pressão de memória do sistema no macOS/Windows/Linux
+- Botão "proteger este site" em cada linha e atalhos de teclado
 - Notificações e gráfico do peso de cada aba ao longo do tempo
 - Traduções (`_locales`), testes no Firefox e versão para Safari
 

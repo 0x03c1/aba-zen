@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Memória das Abas",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mostra quais abas estão pesando e suspende as mais pesadas quando a memória do computador aperta.",
   "minimum_chrome_version": "121",
   "browser_specific_settings": {
@@ -29,6 +29,7 @@
       "all_frames": false
     }
   ],
+  "options_ui": { "page": "options.html", "open_in_tab": true },
   "action": {
     "default_popup": "popup.html",
     "default_title": "Memória das Abas",

@@ -6,42 +6,45 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header>
-    <div>
-      <h1>Memória das Abas</h1>
-      <p id="ram" class="sub">medindo…</p>
+  <header class="topo">
+    <div class="linha">
+      <div>
+        <h1>Memória das Abas</h1>
+        <p id="ram" class="sub">medindo…</p>
+      </div>
+      <div class="acoes">
+        <button id="atualizar" title="Medir agora" aria-label="Medir agora">↻</button>
+        <button id="opcoes" title="Configurações e histórico" aria-label="Configurações e histórico">⚙</button>
+      </div>
     </div>
-    <button id="atualizar" title="Medir agora" aria-label="Medir agora">↻</button>
+    <div id="barra" class="barra" role="progressbar" aria-label="RAM usada" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+    <p id="resumo" class="resumo"></p>
+    <div class="ferramentas">
+      <input id="busca" type="search" placeholder="Buscar aba ou site…" aria-label="Buscar aba ou site" autocomplete="off">
+      <select id="ordem" aria-label="Ordenar por">
+        <option value="mem">Mais memória</option>
+        <option value="cpu">Mais CPU</option>
+        <option value="parada">Parada há mais tempo</option>
+      </select>
+    </div>
+    <div class="filtros">
+      <div id="filtros" role="radiogroup" aria-label="Filtrar abas"></div>
+      <label class="agrupar"><input type="checkbox" id="agrupar"> por site</label>
+    </div>
   </header>
-  <div id="barra" class="barra" role="progressbar" aria-label="RAM usada" aria-valuemin="0" aria-valuemax="100"><span></span></div>
 
   <ol id="abas"></ol>
 
-  <details id="historicoBox">
-    <summary>Suspensas automaticamente</summary>
-    <ul id="historico"></ul>
-  </details>
+  <div class="rodape-lista">
+    <button id="mais" hidden></button>
+    <button id="suspenderLista" hidden title="Abas ativas, tocando som ou protegidas ficam de fora"></button>
+  </div>
 
-  <details>
-    <summary>Configurações</summary>
-    <form id="cfg">
-      <label><input type="checkbox" name="automatico"> Suspender automaticamente quando a memória apertar</label>
-      <label>RAM livre abaixo de <input type="number" name="limiteLivre" min="3" max="60" required> %</label>
-      <label>Aba parada há pelo menos <input type="number" name="minutosParada" min="1" max="240" required> min</label>
-      <label>Considerar pesada acima de <input type="number" name="pesadaMB" min="50" max="5000" step="10" required> MB</label>
-      <label>…ou CPU acima de <input type="number" name="cpuPesada" min="5" max="100" required> %</label>
-      <label>Suspender no máximo <input type="number" name="porCiclo" min="1" max="10" required> aba(s) por minuto</label>
-      <label><input type="checkbox" name="protegerFixadas"> Nunca suspender abas fixadas</label>
-      <label>Sites protegidos (um por linha; pode colar a URL)
-        <textarea name="protegidos" rows="4"></textarea>
-      </label>
-      <p class="sub">Abas usando câmera, microfone ou compartilhando a tela, e abas com texto digitado e não enviado, nunca são suspensas automaticamente.</p>
-      <div><button type="submit">Salvar</button> <span id="salvo" class="sub" role="status"></span></div>
-    </form>
-  </details>
-
-  <p class="nota">Valores são <b>estimativas</b> (memória do JavaScript + elementos + frames de terceiros). Para o número exato, use o gerenciador de tarefas do navegador (Shift+Esc no Chrome/Edge para Windows e Linux; menu Janela no macOS; <code>about:processes</code> no Firefox).</p>
+  <p class="nota" title="Memória do JavaScript + elementos + frames de terceiros. Para números reais por processo, use o gerenciador de tarefas do navegador: Shift+Esc no Windows/Linux, menu Janela no macOS, about:processes no Firefox.">
+    Valores são <b>estimativas</b> ⓘ — números reais: gerenciador de tarefas do navegador.
+  </p>
   <script src="config.js"></script>
+  <script src="comum.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

@@ -69,10 +69,13 @@ async function ciclo({ podeSuspender = true } = {}) {
 
   // Abas congeladas pelo navegador não respondem; acordá-las só para medir
   // gastaria a memória que queremos poupar. Reaproveitamos a última medida.
-  const medidaAnterior = new Map((anterior?.abas ?? []).map((t) => [t.id, t.medida]));
-  const medidas = await Promise.all(
-    abas.map((a) => (a.frozen ? medidaAnterior.get(a.id) ?? null : medirAba(a)))
-  );
+  // Nas suspensas, a última medida mostra quanto a suspensão liberou.
+  // Ao suspender, o Chromium pode trocar o id da aba; então também casamos pela URL.
+  const porId = new Map((anterior?.abas ?? []).map((t) => [t.id, t.medida]));
+  const porUrl = new Map();
+  for (const t of anterior?.abas ?? []) if (t.medida && !porUrl.has(t.url)) porUrl.set(t.url, t.medida);
+  const ultimaMedida = (a) => porId.get(a.id) ?? porUrl.get(a.url) ?? null;
+  const medidas = await Promise.all(abas.map((a) => (a.frozen || a.discarded ? ultimaMedida(a) : medirAba(a))));
 
   const lista = abas.map((a, i) => {
     const m = medidas[i];
@@ -142,6 +145,20 @@ async function injetarNasAbasAbertas() {
   }
 }
 
+// Suspensão em massa pedida pelo popup: de novo confere ativa/som/proteções na hora.
+async function suspenderVarias(ids) {
+  const { estado } = await chrome.storage.session.get("estado");
+  const protegidas = new Set((estado?.abas ?? []).filter((t) => t.protegida).map((t) => t.id));
+  for (const id of ids) {
+    if (protegidas.has(id)) continue;
+    try {
+      const aba = await chrome.tabs.get(id);
+      if (aba.active || aba.audible || aba.discarded || !ehWeb(aba.url)) continue;
+      await chrome.tabs.discard(id);
+    } catch {}
+  }
+}
+
 function agendar() {
   chrome.alarms.create("ciclo", { periodInMinutes: 1 });
 }
@@ -168,6 +185,10 @@ chrome.runtime.onMessage.addListener((msg, remetente, responder) => {
   }
   if (msg?.tipo === "suspender") {
     chrome.tabs.discard(msg.id).then(() => ciclo({ podeSuspender: false })).then(responder, () => responder(null));
+    return true;
+  }
+  if (msg?.tipo === "suspenderVarias" && Array.isArray(msg.ids)) {
+    suspenderVarias(msg.ids.filter(Number.isInteger)).then(() => ciclo({ podeSuspender: false })).then(responder);
     return true;
   }
 });
