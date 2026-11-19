@@ -1,15 +1,37 @@
-# Aba Zen
+<p align="center">
+  <img src="docs/logo.png" width="112" height="112" alt="Logo da Aba Zen: lua crescente sobre fundo verde">
+</p>
 
-Extensão de navegador que **suspende as abas paradas**, **guarda abas em grupos** para abrir depois e **recupera as abas** quando o navegador fecha de repente. Feita para gastar o mínimo possível: ela mesma quase não usa memória nem CPU. Funciona no Chrome, Edge, Brave, Opera, Vivaldi, Arc, Dia (Chromium) e, em modo experimental, no Firefox. Windows, macOS e Linux.
+<h1 align="center">Aba Zen</h1>
 
 <p align="center">
-  <img src="docs/popup-claro.png" width="270" alt="Popup: ações rápidas, aviso de recuperação de sessão e a lista de abas com o peso de cada uma">
-  <img src="docs/popup-escuro.png" width="270" alt="O popup no tema escuro">
+  <strong>Suspende as abas paradas, guarda abas para depois e recupera a sessão.</strong><br>
+  Leve, sem rede, sem conta. Chrome, Edge, Brave, Opera, Vivaldi, Arc, Dia e (experimental) Firefox — Windows, macOS e Linux.
 </p>
+
 <p align="center">
-  <img src="docs/aba-suspensa.png" width="400" alt="Aba suspensa: título, site e o aviso de clicar em qualquer lugar para voltar">
-  <img src="docs/abas-salvas.png" width="400" alt="Página de abas salvas, com grupos, busca, importar e exportar">
+  <a href="#instalar">Instalar</a> ·
+  <a href="#o-que-faz">O que faz</a> ·
+  <a href="#como-funciona">Como funciona</a> ·
+  <a href="PRIVACY.md">Privacidade</a>
 </p>
+
+<p align="center">
+  <img src="docs/aba-suspensa.png" width="860" alt="Abas paradas descansam: a aba suspensa não recarrega ao visitar; o site só volta quando você clica na página">
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/painel.png" alt="Todas as abas num painel: suspender uma, as outras ou salvar e fechar a janela, com o peso de cada aba"></td>
+    <td width="50%"><img src="docs/abas-salvas.png" alt="Guarde abas para depois: grupos de abas salvas, com busca, importar e exportar"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/recuperar.png" alt="O navegador fechou de repente? As abas da sessão anterior voltam com um clique (tema escuro)"></td>
+    <td width="50%"><img src="docs/protecoes.png" alt="Você decide o que nunca suspender: sites protegidos, abas fixadas, som, câmera e texto digitado"></td>
+  </tr>
+</table>
+
+Extensão de navegador que **suspende as abas paradas**, **guarda abas em grupos** para abrir depois e **recupera as abas** quando o navegador fecha de repente. Feita para gastar o mínimo possível: ela mesma quase não usa memória nem CPU.
 
 ## O que faz
 
