@@ -1,18 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Memória das Abas",
-  "version": "0.3.0",
-  "description": "Mostra quais abas estão pesando e suspende as mais pesadas quando a memória do computador aperta.",
+  "name": "Aba Zen",
+  "version": "0.4.0",
+  "description": "Suspende abas paradas sem recarregar ao visitar, salva abas em listas e recupera a sessão se o navegador fechar.",
   "minimum_chrome_version": "121",
   "browser_specific_settings": {
     "gecko": {
-      "id": "memoria-das-abas@0x03c1.github.io",
+      "id": "aba-zen@0x03c1.github.io",
       "strict_min_version": "128.0",
       "data_collection_permissions": { "required": ["none"] }
     }
   },
-  "permissions": ["tabs", "storage", "alarms", "system.memory", "scripting"],
+  "permissions": ["tabs", "storage", "unlimitedStorage", "alarms", "system.memory", "scripting", "favicon"],
   "host_permissions": ["http://*/*", "https://*/*"],
+  "incognito": "not_allowed",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  },
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
@@ -29,10 +33,20 @@
       "all_frames": false
     }
   ],
+  "commands": {
+    "suspender-aba": {
+      "suggested_key": { "default": "Alt+Shift+S" },
+      "description": "Suspender ou reativar a aba atual"
+    },
+    "salvar-janela": {
+      "suggested_key": { "default": "Alt+Shift+A" },
+      "description": "Salvar e fechar as abas desta janela"
+    }
+  },
   "options_ui": { "page": "options.html", "open_in_tab": true },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Memória das Abas",
+    "default_title": "Aba Zen",
     "default_icon": { "16": "icones/16.png", "32": "icones/32.png", "48": "icones/48.png" }
   },
   "icons": { "16": "icones/16.png", "48": "icones/48.png", "128": "icones/128.png" }

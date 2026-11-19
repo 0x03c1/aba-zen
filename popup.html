@@ -2,22 +2,33 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Memória das Abas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aba Zen</title>
+  <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="popup.css">
 </head>
-<body>
+<body class="popup">
   <header class="topo">
     <div class="linha">
-      <div>
-        <h1>Memória das Abas</h1>
-        <p id="ram" class="sub">medindo…</p>
+      <div class="marca">
+        <h1>Aba Zen</h1>
+        <p id="ram" class="sub">carregando…</p>
       </div>
-      <div class="acoes">
-        <button id="atualizar" title="Medir agora" aria-label="Medir agora">↻</button>
-        <button id="opcoes" title="Configurações e histórico" aria-label="Configurações e histórico">⚙</button>
-      </div>
+      <div class="acoes" id="acoesTopo"></div>
     </div>
-    <div id="barra" class="barra" role="progressbar" aria-label="RAM usada" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+    <div id="barra" class="barra" role="progressbar" aria-label="RAM usada" aria-valuemin="0" aria-valuemax="100" hidden><span></span></div>
+
+    <div id="desatualizada" class="recuperar" role="alert" hidden></div>
+
+    <div class="rapidas" role="group" aria-label="Ações rápidas">
+      <button id="estaAba" type="button" disabled></button>
+      <button id="outras" type="button" title="Suspende as outras abas abertas. Ativas, com som e protegidas ficam de fora." disabled></button>
+      <button id="salvarJanela" type="button" title="Guarda as abas desta janela em Abas salvas e fecha na hora. Fixadas e páginas internas ficam abertas."></button>
+      <button id="salvas" type="button" title="Abrir a lista de abas salvas"></button>
+    </div>
+
+    <div id="recuperar" class="recuperar" role="status" hidden></div>
+
     <p id="resumo" class="resumo"></p>
     <div class="ferramentas">
       <input id="busca" type="search" placeholder="Buscar aba ou site…" aria-label="Buscar aba ou site" autocomplete="off">
@@ -36,14 +47,15 @@
   <ol id="abas"></ol>
 
   <div class="rodape-lista">
-    <button id="mais" hidden></button>
-    <button id="suspenderLista" hidden title="Abas ativas, tocando som ou protegidas ficam de fora"></button>
+    <button id="mais" type="button" hidden></button>
+    <button id="suspenderLista" type="button" hidden title="Abas ativas, tocando som ou protegidas ficam de fora"></button>
   </div>
 
-  <p class="nota" title="Memória do JavaScript + elementos + frames de terceiros. Para números reais por processo, use o gerenciador de tarefas do navegador: Shift+Esc no Windows/Linux, menu Janela no macOS, about:processes no Firefox.">
-    Valores são <b>estimativas</b> ⓘ — números reais: gerenciador de tarefas do navegador.
+  <p class="nota" title="Memória do JavaScript + elementos + frames de terceiros, medida só enquanto este painel está aberto. Para números reais por processo, use o gerenciador de tarefas do navegador: Shift+Esc no Windows/Linux, menu Janela no macOS, about:processes no Firefox.">
+    Memória por aba é <b>estimativa</b>, medida só com este painel aberto.
   </p>
   <script src="config.js"></script>
+  <script src="sessoes.js"></script>
   <script src="comum.js"></script>
   <script src="popup.js"></script>
 </body>

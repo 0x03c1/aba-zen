@@ -1,0 +1,21 @@
+/* Página de aba suspensa: de propósito não carrega base.css — quanto menos, melhor. */
+:root { color-scheme: light dark; --fundo: #f3f6f6; --texto: #14211f; --sutil: #55646a; --acento: #0f766e; }
+@media (prefers-color-scheme: dark) {
+  :root { --fundo: #17191a; --texto: #eef2f2; --sutil: #9ba8aa; --acento: #2dd4bf; }
+}
+html, body { height: 100%; margin: 0; }
+body {
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fundo); color: var(--texto); cursor: pointer;
+}
+main { height: 100%; display: grid; place-items: center; padding: 24px; box-sizing: border-box; }
+button {
+  all: unset; cursor: pointer; display: grid; justify-items: center; gap: 6px;
+  max-width: min(560px, 100%); padding: 20px 24px; border-radius: 12px; text-align: center;
+}
+button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+#icone { margin-bottom: 8px; opacity: .6; border-radius: 6px; }
+.titulo { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.site { color: var(--sutil); overflow-wrap: anywhere; }
+.dica { color: var(--sutil); margin-top: 14px; font-size: 13px; }
+[hidden] { display: none; }

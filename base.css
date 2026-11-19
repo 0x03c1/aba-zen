@@ -1,0 +1,82 @@
+/* Base visual de todas as páginas da extensão: cores (claro/escuro), tipografia do
+   sistema e controles. Sem fontes nem imagens externas. Pares de cor com contraste AA. */
+:root {
+  color-scheme: light dark;
+  --fundo: #ffffff;
+  --cartao: #f3f6f6;
+  --texto: #14211f;
+  --sutil: #55646a;
+  --linha: #d9e1e1;
+  --acento: #0f766e;
+  --sobre-acento: #ffffff;
+  --acento-fraco: #e0f2ef;
+  --ok: #15803d;
+  --alerta: #a85800;
+  --perigo: #c02626;
+  --sombra: 0 4px 16px rgb(0 0 0 / .14);
+  --raio: 6px;
+  --rapido: 120ms;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #17191a;
+    --cartao: #222627;
+    --texto: #eef2f2;
+    --sutil: #9ba8aa;
+    --linha: #353b3c;
+    --acento: #2dd4bf;
+    --sobre-acento: #06201c;
+    --acento-fraco: #16302d;
+    --ok: #4ade80;
+    --alerta: #fbbf24;
+    --perigo: #f87171;
+    --sombra: 0 4px 16px rgb(0 0 0 / .5);
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+}
+h1, h2, h3, p { margin: 0; }
+ol, ul { list-style: none; margin: 0; padding: 0; }
+a { color: var(--acento); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+.sub { color: var(--sutil); font-size: 12px; }
+.perigo { color: var(--perigo); }
+
+button, select, input, textarea {
+  font: inherit; color: var(--texto); background: var(--cartao);
+  border: 1px solid var(--linha); border-radius: var(--raio); padding: 4px 9px;
+}
+button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 28px; transition: border-color var(--rapido), background-color var(--rapido), color var(--rapido); }
+button:hover:not(:disabled) { border-color: var(--acento); }
+button:active:not(:disabled) { background: var(--acento-fraco); }
+button:disabled { opacity: .45; cursor: default; }
+button.primario { background: var(--acento); border-color: var(--acento); color: var(--sobre-acento); font-weight: 600; }
+button.confirmar { border-color: var(--perigo); color: var(--perigo); font-weight: 600; }
+button.so-icone { padding: 0; width: 28px; min-width: 28px; height: 28px; color: var(--sutil); background: none; border-color: transparent; }
+button.so-icone:hover:not(:disabled) { color: var(--texto); background: var(--cartao); border-color: var(--linha); }
+button.so-icone.confirmar { width: auto; padding: 0 7px; font-size: 11.5px; color: var(--perigo); border-color: var(--perigo); }
+input[type=checkbox] { accent-color: var(--acento); width: 15px; height: 15px; margin: 0; padding: 0; }
+.ic { flex: none; display: block; }
+
+.fav, .sem-icone { width: 16px; height: 16px; flex: none; border-radius: 3px; }
+.sem-icone { display: inline-block; background: var(--linha); }
+
+/* Aviso curto no rodapé (com "Desfazer" quando cabe) */
+.aviso {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 10;
+  display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 24px);
+  background: var(--texto); color: var(--fundo); padding: 6px 8px 6px 12px;
+  border-radius: 8px; box-shadow: var(--sombra); font-size: 12.5px;
+}
+.aviso button { background: none; color: inherit; border-color: currentColor; min-height: 24px; padding: 1px 8px; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

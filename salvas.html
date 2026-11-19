@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aba Zen — Abas salvas</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="salvas.css">
+</head>
+<body class="pagina salvas">
+  <main>
+    <header class="cabeca">
+      <div>
+        <h1>Abas salvas</h1>
+        <p id="total" class="sub">carregando…</p>
+      </div>
+      <div class="acoes">
+        <button id="importar" type="button">Importar</button>
+        <button id="exportarJson" type="button" title="Arquivo completo, para guardar ou levar a outro navegador">Exportar</button>
+        <button id="exportarTexto" type="button" title="Lista “endereço | título”, o mesmo formato do OneTab">Exportar texto</button>
+        <button id="opcoes" type="button">Configurações</button>
+      </div>
+    </header>
+
+    <input id="busca" type="search" placeholder="Buscar nas abas salvas…" aria-label="Buscar nas abas salvas" autocomplete="off">
+
+    <div id="grupos" aria-live="off"></div>
+    <button id="maisGrupos" type="button" hidden></button>
+
+    <section id="sessoes">
+      <h2>Sessões automáticas</h2>
+      <p class="sub">Fotos das abas abertas, guardadas quando o navegador reinicia ou quando muitas abas somem de uma vez. Servem para recuperar o que se perdeu num travamento. Ficam as 5 mais recentes.</p>
+      <div id="listaSessoes"></div>
+    </section>
+  </main>
+
+  <dialog id="dlgImportar" aria-labelledby="tituloImportar">
+    <form method="dialog">
+      <h2 id="tituloImportar">Importar abas</h2>
+      <p class="sub">Aceita o arquivo exportado pela Aba Zen (JSON) ou uma lista “endereço | título” por linha — o formato de exportação do OneTab. Uma linha em branco separa os grupos.</p>
+      <label for="arquivo">Arquivo</label>
+      <input id="arquivo" type="file" accept=".json,.txt,application/json,text/plain">
+      <label for="colado">…ou cole o texto aqui</label>
+      <textarea id="colado" rows="8" spellcheck="false"></textarea>
+      <p id="erroImportar" class="perigo" role="alert"></p>
+      <div class="botoes">
+        <button type="button" id="confirmarImportar" class="primario">Importar</button>
+        <button type="submit">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="sessoes.js"></script>
+  <script src="comum.js"></script>
+  <script src="salvas.js"></script>
+</body>
+</html>

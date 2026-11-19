@@ -1,11 +1,14 @@
 // Roda dentro de cada página (só no frame principal). Não envia nada para fora:
-// apenas responde quando o background da extensão pede uma medição.
+// responde quando o background da extensão pergunta e avisa, uma única vez,
+// quando a página passa a ter texto digitado ou mídia em uso (para não ser suspensa).
+// Custo por página: dois ouvintes de evento e um contador de tamanho fixo.
 (() => {
   // Se a extensão foi recarregada/atualizada, a cópia antiga deste script fica
   // "órfã" (sem contexto). Nesse caso deixamos a nova cópia se instalar.
-  const anterior = globalThis.__memoriaDasAbas;
+  const anterior = globalThis.__abaZen;
   if (anterior?.vivo()) return;
   anterior?.parar();
+  try { globalThis.__memoriaDasAbas?.parar(); } catch {} // cópia de antes da troca de nome
 
   const runtime = chrome.runtime;
   const vivo = () => {
@@ -16,49 +19,107 @@
     }
   };
 
-  const JANELA_MS = 60_000; // CPU medida no último minuto
-  let tarefasLongas = []; // [fim, duração]
+  // ---------- CPU: tempo em tarefas longas no último minuto ----------
+  // Seis baldes de 10 s reaproveitados em roda: memória constante, por mais
+  // que a página trabalhe e mesmo que ninguém peça uma medição.
+  const BALDE_MS = 10_000;
+  const BALDES = 6;
+  const soma = new Array(BALDES).fill(0);
+  const dono = new Array(BALDES).fill(-1); // de qual intervalo de 10 s é cada balde
   let observador = null;
   try {
     observador = new PerformanceObserver((lista) => {
-      for (const e of lista.getEntries()) tarefasLongas.push([e.startTime + e.duration, e.duration]);
+      for (const e of lista.getEntries()) {
+        const b = Math.floor((e.startTime + e.duration) / BALDE_MS);
+        const i = b % BALDES;
+        if (dono[i] !== b) {
+          dono[i] = b;
+          soma[i] = 0;
+        }
+        soma[i] += e.duration;
+      }
     });
     observador.observe({ type: "longtask", buffered: true });
   } catch {
     observador = null; // navegador sem suporte a longtask (ex.: Firefox): CPU fica como null
   }
+  function ocupadoMs(agora) {
+    const atual = Math.floor(agora / BALDE_MS);
+    let total = 0;
+    for (let i = 0; i < BALDES; i++) if (dono[i] >= 0 && atual - dono[i] < BALDES) total += soma[i];
+    return total;
+  }
+
+  // ---------- Avisos ao background ----------
+  // Poucos e limitados: a página não consegue usar isto para manter a extensão acordada.
+  let avisosRestantes = 20;
+  function avisar(sinal) {
+    if (avisosRestantes-- <= 0) return;
+    try {
+      runtime.sendMessage({ tipo: "sinal", ...sinal })?.catch?.(() => {});
+    } catch {}
+  }
 
   // Campo com texto digitado e ainda não enviado: suspender perderia o que foi escrito.
-  // Guardamos os campos editados e, na hora de medir, vemos se ainda têm texto
+  // Guardamos os campos editados e, na hora de responder, vemos se ainda têm texto
   // (caixas de chat que se esvaziam ao enviar não travam a aba para sempre).
-  let editados = new Set(); // WeakRef de elementos
+  const editados = new Set(); // WeakRef de elementos
+  const vistos = new WeakSet(); // para não guardar o mesmo campo a cada tecla
+  let avisouForm = false;
   const aoDigitar = (e) => {
+    if (!e.isTrusted) return; // só digitação de verdade, não eventos criados pela página
     const alvo = e.composedPath?.()[0] ?? e.target;
     if (alvo instanceof HTMLInputElement && ["password", "search", "hidden", "checkbox", "radio", "range"].includes(alvo.type)) return;
-    if (alvo instanceof HTMLInputElement || alvo instanceof HTMLTextAreaElement || alvo?.isContentEditable) editados.add(new WeakRef(alvo));
+    if (!(alvo instanceof HTMLInputElement || alvo instanceof HTMLTextAreaElement || alvo?.isContentEditable)) return;
+    if (!vistos.has(alvo)) {
+      if (editados.size >= 50) formularioEditado(); // cheio: tira os vazios e os que saíram da página
+      if (editados.size < 50) {
+        vistos.add(alvo);
+        editados.add(new WeakRef(alvo));
+      }
+    }
+    if (!avisouForm) {
+      avisouForm = true;
+      avisar({ form: true });
+    }
   };
-  const aoEnviar = () => (editados = new Set());
   const temTexto = (el) => (el.isContentEditable ? el.textContent : el.value).trim().length > 0;
   function formularioEditado() {
     for (const ref of editados) {
       const el = ref.deref();
       if (el?.isConnected && temTexto(el)) return true;
       editados.delete(ref);
+      if (el) vistos.delete(el);
     }
     return false;
   }
   document.addEventListener("input", aoDigitar, true);
-  document.addEventListener("submit", aoEnviar, true);
 
-  // Pergunta ao midia.js (mundo da página) se há câmera/microfone/tela em uso.
+  // O midia.js (mundo da página) avisa quando câmera/microfone/tela começam.
+  let avisouMidia = false;
+  const aoComecarMidia = () => {
+    if (avisouMidia) return;
+    avisouMidia = true;
+    avisar({ midia: true });
+  };
+  document.addEventListener("aba-zen:midia", aoComecarMidia);
+
+  // Pergunta ao midia.js se há câmera/microfone/tela em uso agora.
   function usandoMidia() {
     let resposta = false;
     const ouvir = (e) => (resposta = e.detail === true);
-    document.addEventListener("memoria-das-abas:resposta", ouvir, { once: true });
-    document.dispatchEvent(new CustomEvent("memoria-das-abas:pergunta"));
-    document.removeEventListener("memoria-das-abas:resposta", ouvir);
+    document.addEventListener("aba-zen:resposta", ouvir, { once: true });
+    document.dispatchEvent(new CustomEvent("aba-zen:pergunta"));
+    document.removeEventListener("aba-zen:resposta", ouvir);
     return resposta;
   }
+
+  // Resposta leve, usada antes de suspender.
+  const tocando = () => {
+    for (const m of document.querySelectorAll("video, audio")) if (!m.paused && !m.ended && m.readyState > 2) return true;
+    return false;
+  };
+  const estado = () => ({ formularioEditado: formularioEditado(), midia: usandoMidia(), tocando: tocando() });
 
   // Domínio "registrável" aproximado (exemplo.com.br, exemplo.com)
   const raiz = (host) => {
@@ -67,11 +128,10 @@
     return p.slice(sufixoDuplo ? -3 : -2).join(".");
   };
 
+  // Medição completa: só roda quando o popup pede.
   function medir() {
     const agora = performance.now();
-    tarefasLongas = tarefasLongas.filter(([fim]) => agora - fim < JANELA_MS);
-    const ocupadoMs = tarefasLongas.reduce((s, [, d]) => s + d, 0);
-    const janela = Math.min(JANELA_MS, agora);
+    const janela = Math.min(BALDE_MS * BALDES, agora);
 
     const mem = performance.memory; // não-padrão; só em navegadores Chromium
     const minhaRaiz = raiz(location.hostname);
@@ -81,7 +141,7 @@
       frames++;
       try {
         const h = new URL(f.src, location.href).hostname;
-        if (h && raiz(h) !== minhaRaiz) terceiros.add(h);
+        if (h && h.length <= 253 && raiz(h) !== minhaRaiz) terceiros.add(h);
       } catch {}
     }
 
@@ -94,26 +154,26 @@
       elementos: document.getElementsByTagName("*").length,
       frames,
       framesTerceiros: [...terceiros].slice(0, 12),
-      cpu: observador && janela > 0 ? Math.min(100, (ocupadoMs / janela) * 100) : null,
+      cpu: observador && janela > 0 ? Math.min(100, (ocupadoMs(agora) / janela) * 100) : null,
       recursos: recursos.length,
       baixadoMB: baixadoKB / 1024,
       videos: document.querySelectorAll("video").length,
-      formularioEditado: formularioEditado(),
-      midia: usandoMidia(),
+      ...estado(),
     };
   }
 
   const aoMensagem = (msg, _remetente, responder) => {
-    if (msg && msg.tipo === "medir") responder(medir());
+    if (msg?.tipo === "estado") responder(estado());
+    else if (msg?.tipo === "medir") responder(medir());
   };
   runtime.onMessage.addListener(aoMensagem);
 
-  globalThis.__memoriaDasAbas = {
+  globalThis.__abaZen = {
     vivo,
     parar() {
       observador?.disconnect();
       document.removeEventListener("input", aoDigitar, true);
-      document.removeEventListener("submit", aoEnviar, true);
+      document.removeEventListener("aba-zen:midia", aoComecarMidia);
       try { runtime.onMessage.removeListener(aoMensagem); } catch {}
     },
   };

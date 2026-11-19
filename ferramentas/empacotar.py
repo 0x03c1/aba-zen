@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Gera os pacotes em dist/ (o manifest.json da raiz é o do Chromium):
-  - memoria-das-abas-<versão>-chrome.zip   (Chrome Web Store / Edge Add-ons)
-  - memoria-das-abas-<versão>-firefox.zip  (addons.mozilla.org)
+  - aba-zen-<versão>-chrome.zip   (Chrome Web Store / Edge Add-ons)
+  - aba-zen-<versão>-firefox.zip  (addons.mozilla.org)
 
 Cada pacote leva só os arquivos da extensão e um manifest limpo para a loja
 (sem as chaves do outro navegador). Uso: python3 ferramentas/empacotar.py
@@ -12,10 +12,15 @@ import zipfile
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 ARQUIVOS = [
-    "background.js", "config.js", "comum.js", "medidor.js", "midia.js",
+    "config.js", "sessoes.js", "comum.js", "base.css",
+    "background.js", "medidor.js", "midia.js",
     "popup.html", "popup.js", "popup.css",
     "options.html", "options.js", "options.css",
+    "salvas.html", "salvas.js", "salvas.css",
+    "suspensa.html", "suspensa.js", "suspensa.css",
 ]
+# Permissões que só existem no Chromium (o Firefox recusa ou avisa).
+SO_CHROMIUM = {"system.memory", "favicon"}
 
 
 def manifest_para(navegador):
@@ -24,17 +29,17 @@ def manifest_para(navegador):
         m.pop("browser_specific_settings", None)
     else:
         # O Firefox não tem service worker de extensão: usa script de fundo,
-        # com o config.js carregado antes (no Chromium o background.js usa importScripts).
-        # Fica só aqui, porque o Chrome acusa erro com "background.scripts" no MV3.
+        # com config.js e sessoes.js carregados antes (no Chromium o background.js usa
+        # importScripts). Fica só aqui, porque o Chrome acusa erro com "background.scripts" no MV3.
         m.pop("minimum_chrome_version", None)
-        m["background"] = {"scripts": ["config.js", "background.js"]}
-        m["permissions"] = [p for p in m["permissions"] if p != "system.memory"]
+        m["background"] = {"scripts": ["config.js", "sessoes.js", "background.js"]}
+        m["permissions"] = [p for p in m["permissions"] if p not in SO_CHROMIUM]
     return m
 
 
 def empacotar(navegador):
     manifest = manifest_para(navegador)
-    destino = RAIZ / "dist" / f"memoria-das-abas-{manifest['version']}-{navegador}.zip"
+    destino = RAIZ / "dist" / f"aba-zen-{manifest['version']}-{navegador}.zip"
     destino.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")

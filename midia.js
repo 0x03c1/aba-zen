@@ -2,8 +2,8 @@
 // câmera, microfone ou compartilhando a tela. Não lê nem envia nada do conteúdo:
 // apenas responde "sim/não" ao medidor.js por um evento local do documento.
 (() => {
-  if (window.__memoriaDasAbasMidia) return;
-  window.__memoriaDasAbasMidia = true;
+  if (window.__abaZenMidia) return;
+  window.__abaZenMidia = true;
 
   const fluxos = new Set();
   const md = navigator.mediaDevices;
@@ -13,7 +13,10 @@
       if (typeof original !== "function") continue;
       md[nome] = function (...args) {
         return original.apply(this, args).then((fluxo) => {
+          emUso(); // aproveita para esquecer os fluxos já encerrados
           fluxos.add(fluxo);
+          // Avisa na hora que a mídia começou (o medidor repassa ao background uma única vez).
+          document.dispatchEvent(new CustomEvent("aba-zen:midia"));
           return fluxo;
         });
       };
@@ -28,7 +31,7 @@
     return false;
   };
 
-  document.addEventListener("memoria-das-abas:pergunta", () => {
-    document.dispatchEvent(new CustomEvent("memoria-das-abas:resposta", { detail: emUso() }));
+  document.addEventListener("aba-zen:pergunta", () => {
+    document.dispatchEvent(new CustomEvent("aba-zen:resposta", { detail: emUso() }));
   });
 })();

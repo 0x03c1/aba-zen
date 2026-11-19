@@ -1,0 +1,46 @@
+/* Abas salvas (moldura de página em options.css, cores em base.css) */
+.salvas main { max-width: 860px; }
+.salvas .cabeca { align-items: flex-start; flex-wrap: wrap; }
+.salvas .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+#busca { width: 100%; margin-bottom: 16px; padding: 6px 10px; }
+
+/* Cada grupo fora da tela não é desenhado pelo navegador até chegar perto. */
+.grupo {
+  border: 1px solid var(--linha); border-radius: 8px; margin-bottom: 12px; padding: 0 0 4px;
+  content-visibility: auto; contain-intrinsic-size: auto 240px;
+}
+.pagina section.grupo { margin-top: 0; padding-top: 0; }
+.grupo > header { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 12px; border-bottom: 1px solid var(--linha); flex-wrap: wrap; }
+.grupo .nome { flex: 1 1 180px; min-width: 0; }
+input.nome { font-weight: 600; background: none; border-color: transparent; padding: 3px 6px; margin-left: -6px; }
+input.nome:hover, input.nome:focus { border-color: var(--linha); background: var(--cartao); }
+.grupo .meta { white-space: nowrap; }
+
+.grupo ol { padding: 4px 0; }
+.grupo li.aba { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto 28px; align-items: center; gap: 0 10px; padding: 1px 8px 1px 12px; min-height: 32px; }
+.grupo li.aba:hover { background: var(--cartao); }
+.grupo .titulo { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--texto); text-decoration: none; border-radius: 3px; padding: 4px 0; }
+.grupo a.titulo:hover { color: var(--acento); text-decoration: underline; }
+.grupo .dom { color: var(--sutil); font-size: 12.5px; white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.grupo li.aberta .titulo, .grupo li.aberta .fav { opacity: .6; }
+.grupo .mais { margin: 4px 12px 8px; }
+.sessao details { padding: 4px 12px; }
+.sessao summary { cursor: pointer; color: var(--sutil); padding: 4px 0; border-radius: 3px; }
+.sessao li.aba { grid-template-columns: 16px minmax(0, 1fr) auto; padding-left: 0; }
+.sessao > header .nome { flex-basis: 100%; }
+
+.vazio { color: var(--sutil); text-align: center; padding: 28px 12px; border: 1px dashed var(--linha); border-radius: 8px; margin-bottom: 12px; }
+.vazio p + p { margin-top: 6px; }
+
+dialog { border: 1px solid var(--linha); border-radius: 10px; background: var(--fundo); color: var(--texto); padding: 18px; width: min(520px, calc(100vw - 32px)); box-shadow: var(--sombra); }
+dialog::backdrop { background: rgb(0 0 0 / .45); }
+dialog form { display: grid; gap: 8px; }
+dialog label { font-weight: 600; margin-top: 4px; }
+dialog input[type=file] { width: 100%; }
+dialog .botoes { display: flex; gap: 8px; margin-top: 6px; }
+#erroImportar:empty { display: none; }
+
+@media (max-width: 560px) {
+  .grupo .dom { display: none; }
+  .grupo li.aba { grid-template-columns: 16px minmax(0, 1fr) 28px; }
+}

@@ -3,42 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Memória das Abas — Configurações</title>
-  <link rel="stylesheet" href="popup.css">
+  <title>Aba Zen — Configurações</title>
+  <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="options.css">
 </head>
-<body class="opcoes">
+<body class="pagina">
   <main>
-    <h1>Memória das Abas</h1>
+    <header class="cabeca">
+      <h1>Aba Zen</h1>
+      <button id="verSalvas" type="button">Abas salvas</button>
+    </header>
+
+    <form id="cfg" novalidate>
+      <fieldset>
+        <legend>Suspensão automática</legend>
+        <label class="marca"><input type="checkbox" name="automatico"> Suspender abas sem uso automaticamente</label>
+        <label class="campo">Suspender a aba parada há
+          <span><input type="number" name="minutosParada" inputmode="numeric" required> min</span></label>
+        <label class="campo">Suspender no máximo
+          <span><input type="number" name="porCiclo" inputmode="numeric" required> abas por minuto</span></label>
+        <label class="campo">Memória apertada: RAM livre abaixo de
+          <span><input type="number" name="limiteLivre" inputmode="numeric" required> %</span></label>
+        <label class="campo">…e aí basta a aba estar parada há
+          <span><input type="number" name="minutosApertado" inputmode="numeric" required> min</span></label>
+        <p class="sub">A regra da memória apertada só vale nos navegadores que informam a RAM do sistema (Chrome, Edge, Brave e outros Chromium).</p>
+        <label class="marca"><input type="checkbox" name="descartarSuspensas"> Liberar também a memória da própria página de aba suspensa</label>
+        <p class="sub">Com isso a aba suspensa não ocupa memória nenhuma. Ao visitá-la, o navegador recarrega só a página leve da extensão — o site continua parado até você clicar.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Proteções</legend>
+        <label class="marca"><input type="checkbox" name="protegerFixadas"> Nunca suspender abas fixadas</label>
+        <label class="bloco" for="protegidos">Sites protegidos (um por linha; pode colar o endereço)</label>
+        <textarea id="protegidos" name="protegidos" rows="6" spellcheck="false" autocapitalize="off"></textarea>
+        <p class="sub">Nunca são suspensas automaticamente: a aba em uso, abas tocando som, abas usando câmera, microfone ou compartilhando a tela, abas com texto digitado e não enviado, e as que você marcar com “Não suspender esta aba”. Sem internet, nada é suspenso.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Abas salvas</legend>
+        <label class="marca"><input type="checkbox" name="salvarFixadas"> “Salvar e fechar” inclui as abas fixadas</label>
+        <label class="marca"><input type="checkbox" name="manterAoRestaurar"> Manter a aba na lista depois de restaurar</label>
+        <label class="marca"><input type="checkbox" name="restaurarSuspensas"> Abrir as abas restauradas já suspensas (carregam ao clicar)</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Destaque de abas pesadas no painel</legend>
+        <label class="campo">Marcar como pesada acima de
+          <span><input type="number" name="pesadaMB" step="10" inputmode="numeric" required> MB</span></label>
+        <label class="campo">…ou com CPU acima de
+          <span><input type="number" name="cpuPesada" inputmode="numeric" required> %</span></label>
+        <p class="sub">A memória por aba é uma <b>estimativa</b> (<code>30 MB + heap JS + 1,5 MB por mil elementos + 25 MB por frame de terceiro</code>), medida só com o painel aberto. Número real por processo: gerenciador de tarefas do navegador (Shift+Esc no Windows/Linux, menu Janela no macOS, <code>about:processes</code> no Firefox).</p>
+      </fieldset>
+
+      <div class="salvar">
+        <button type="submit" class="primario">Salvar</button>
+        <button type="button" id="padrao">Restaurar padrões</button>
+        <span id="salvo" class="sub" role="status" aria-live="polite"></span>
+      </div>
+    </form>
 
     <section>
-      <h2>Configurações</h2>
-      <form id="cfg">
-        <label><input type="checkbox" name="automatico"> Suspender automaticamente quando a memória apertar</label>
-        <label>RAM livre abaixo de <input type="number" name="limiteLivre" min="3" max="60" required> %</label>
-        <label>Aba parada há pelo menos <input type="number" name="minutosParada" min="1" max="240" required> min</label>
-        <label>Considerar pesada acima de <input type="number" name="pesadaMB" min="50" max="5000" step="10" required> MB</label>
-        <label>…ou CPU acima de <input type="number" name="cpuPesada" min="5" max="100" required> %</label>
-        <label>Suspender no máximo <input type="number" name="porCiclo" min="1" max="10" required> aba(s) por minuto</label>
-        <label><input type="checkbox" name="protegerFixadas"> Nunca suspender abas fixadas</label>
-        <label>Sites protegidos (um por linha; pode colar a URL)
-          <textarea name="protegidos" rows="6"></textarea>
-        </label>
-        <p class="sub">Abas usando câmera, microfone ou compartilhando a tela, e abas com texto digitado e não enviado, nunca são suspensas automaticamente.</p>
-        <div><button type="submit">Salvar</button> <span id="salvo" class="sub" role="status"></span></div>
-      </form>
+      <h2>Como funciona a aba suspensa</h2>
+      <p>Suspender troca o site por uma página leve da extensão, que guarda o endereço, o título e o ícone originais. Visitar a aba <b>não</b> recarrega o site: ele só volta quando você clica na página (ou aperta Enter ou Espaço).</p>
+      <p class="alerta-caixa"><b>Antes de remover ou desativar a extensão:</b> as abas suspensas são páginas dela e fecham junto. Reative-as antes (ou exporte suas abas salvas em <a href="salvas.html">Abas salvas</a>).</p>
+    </section>
+
+    <section>
+      <h2>Atalhos de teclado</h2>
+      <ul id="atalhos" class="atalhos"></ul>
+      <p class="sub">Para trocar: <button type="button" id="abrirAtalhos" class="elo">abrir os atalhos do navegador</button>
+        (<code>chrome://extensions/shortcuts</code>; no Firefox, em <code>about:addons</code> → engrenagem → Gerenciar atalhos).</p>
     </section>
 
     <section>
       <h2>Suspensas automaticamente</h2>
-      <ul id="historico"></ul>
-    </section>
-
-    <section>
-      <h2>Sobre os números</h2>
-      <p class="sub">A memória por aba é uma <b>estimativa</b>: <code>30 MB + heap JS + 1,5 MB por mil elementos + 25 MB por frame de terceiro</code>.
-        Navegadores não expõem a memória real por aba para extensões. Para números reais por processo, use o gerenciador de tarefas do
-        navegador (Shift+Esc no Windows/Linux, menu Janela no macOS, <code>about:processes</code> no Firefox).</p>
+      <ul id="historico" class="historico"></ul>
     </section>
   </main>
   <script src="config.js"></script>

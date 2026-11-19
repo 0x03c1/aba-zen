@@ -1,13 +1,38 @@
-body.opcoes { width: auto; max-height: none; padding: 24px 16px; }
-.opcoes main { max-width: 560px; margin: 0 auto; }
-.opcoes h1 { font-size: 20px; margin-bottom: 16px; }
-.opcoes h2 { font-size: 14px; margin: 24px 0 8px; }
-.opcoes section { border-top: 1px solid var(--linha); }
-.opcoes form { display: grid; gap: 9px; }
-.opcoes input[type=number] { width: 70px; }
-.opcoes textarea {
-  font: inherit; color: var(--texto); background: var(--cartao);
-  border: 1px solid var(--linha); border-radius: 6px; padding: 4px 6px;
-  width: 100%; display: block; margin-top: 4px;
-}
-#historico { padding-left: 18px; color: var(--sutil); font-size: 12.5px; }
+/* Páginas inteiras (opções e abas salvas): moldura comum. Cores vêm de base.css. */
+body.pagina { font-size: 14px; line-height: 1.5; padding: 28px 16px 64px; }
+.pagina main { max-width: 640px; margin: 0 auto; }
+.pagina h1 { font-size: 22px; line-height: 1.2; }
+.pagina h2 { font-size: 15px; margin-bottom: 8px; }
+.pagina .sub { font-size: 12.5px; }
+.pagina button, .pagina input, .pagina select, .pagina textarea { min-height: 32px; }
+.pagina input[type=checkbox] { min-height: 0; }
+.cabeca { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.pagina section { border-top: 1px solid var(--linha); padding-top: 18px; margin-top: 24px; }
+.pagina section p + p { margin-top: 8px; }
+code, kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--cartao); border: 1px solid var(--linha); border-radius: 4px; padding: 0 4px; }
+
+/* Formulário de opções */
+fieldset { border: 1px solid var(--linha); border-radius: 8px; padding: 6px 14px 14px; margin: 0 0 16px; display: grid; gap: 10px; min-width: 0; }
+legend { font-weight: 600; padding: 0 6px; font-size: 14px; }
+label.marca { display: flex; align-items: center; gap: 8px; cursor: pointer; min-height: 24px; }
+label.campo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+label.campo span { display: inline-flex; align-items: center; gap: 6px; color: var(--sutil); white-space: nowrap; }
+label.bloco { display: block; margin-bottom: -4px; }
+input[type=number] { width: 84px; text-align: right; font-variant-numeric: tabular-nums; }
+textarea { width: 100%; display: block; resize: vertical; padding: 6px 8px; }
+.salvar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; bottom: 0; background: var(--fundo); padding: 10px 0; border-top: 1px solid var(--linha); }
+.salvar .primario { min-width: 96px; }
+
+.alerta-caixa { border-left: 3px solid var(--alerta); background: var(--cartao); padding: 8px 12px; border-radius: 0 var(--raio) var(--raio) 0; }
+button.elo { all: unset; color: var(--acento); text-decoration: underline; cursor: pointer; border-radius: 3px; }
+button.elo:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+
+.atalhos { display: grid; gap: 6px; margin-bottom: 8px; }
+.atalhos li { display: flex; gap: 10px; align-items: baseline; }
+.atalhos kbd { min-width: 96px; text-align: center; padding: 1px 6px; }
+
+.historico { display: grid; }
+.historico li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 12px; padding: 6px 0; border-bottom: 1px solid var(--linha); font-size: 13px; }
+.historico .quando { color: var(--sutil); font-variant-numeric: tabular-nums; grid-row: span 2; }
+.historico .o-que { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.historico li.sub { display: block; border: 0; }
